@@ -19,25 +19,27 @@
       <label class="user-picker">Viewing demo profile
         <select id="user-select" aria-label="Choose demo profile"></select>
       </label>
+      <button id="try-week" class="text-button" type="button">Try a demo week →</button>
     </section>
 
     <section class="grid">
       <div>
         <article class="card checkin-card">
-          <div class="card-heading"><div><p class="eyebrow">Daily check-in</p><h2>Check in with yourself</h2></div><span class="date" id="today"></span></div>
-          <p class="question">What best describes your mood?</p>
-          <div class="moods" id="moods" role="radiogroup" aria-label="Mood score"></div>
-          <label class="note-label" for="note">Anything you want to remember?</label>
-          <textarea id="note" maxlength="500" placeholder="Optional — this stays private in the demo"></textarea>
-          <button id="submit" class="primary" type="button">Save today's check-in</button>
+          <div class="card-heading"><div><p class="eyebrow">Daily check-in · <span id="step-label">1 of 3</span></p><h2 id="step-title">How are you feeling?</h2></div><span class="date" id="today"></span></div>
+          <div class="step" id="step-mood"><p class="question">Choose the word that feels closest right now.</p><div class="moods" id="moods" role="radiogroup" aria-label="Mood score"></div><button id="to-tags" class="primary" type="button">Continue</button></div>
+          <div class="step hidden" id="step-tags"><p class="question">What might be shaping your mood?</p><div class="tags" id="tags"></div><button id="to-note" class="primary" type="button">Continue</button><button id="back-mood" class="back-button" type="button">Back</button></div>
+          <div class="step hidden" id="step-note"><p class="question">Anything you want to remember?</p><label class="note-label" for="note">Optional reflection</label><textarea id="note" maxlength="500" placeholder="What would be kind to remember about today?"></textarea><button id="submit" class="primary" type="button">Save today's check-in</button><button id="back-tags" class="back-button" type="button">Back</button></div>
           <p id="message" class="message" role="status"></p>
         </article>
         <article class="card">
           <div class="card-heading"><div><p class="eyebrow">Your pattern</p><h2>Recent mood</h2></div><span class="trend-label">Last 7 days</span></div>
           <div id="chart" class="chart" aria-label="Mood trend chart"></div>
+          <div id="selected-entry" class="selected-entry hidden"></div>
         </article>
+        <article class="card history-card"><div class="card-heading"><div><p class="eyebrow">Your reflections</p><h2>Recent check-ins</h2></div></div><div id="history"></div></article>
       </div>
       <aside>
+        <article class="card insight-card"><p class="eyebrow">A gentle reflection</p><h2 id="reflection">Your week, in a glance</h2><div class="insight-stats"><div><strong id="average">—</strong><span>average mood</span></div><div><strong id="count">—</strong><span>check-ins</span></div><div><strong id="top-tag">—</strong><span>common theme</span></div></div></article>
         <article class="card support-card">
           <p class="eyebrow">A little support</p><h2>Try this today</h2>
           <div id="resources"></div>
@@ -47,6 +49,7 @@
           <p>If you may hurt yourself or someone else, call your local emergency number now. In the U.S. or Canada, call or text <strong>988</strong>.</p>
           <p class="small">This demo is not a crisis service or a substitute for professional care.</p>
         </article>
+        <article class="card about-card"><p class="eyebrow">The Kindred loop</p><h2>Notice. Reflect. Try again.</h2><p>One small check-in can turn a busy day into something you can understand—and respond to with care.</p></article>
       </aside>
     </section>
   </main>

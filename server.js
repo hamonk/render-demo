@@ -7,27 +7,67 @@ const port = Number(process.env.PORT || 10000);
 const publicDir = path.join(__dirname, "public");
 
 const users = [
-  { id: "maya", pseudonym: "Maya R.", initials: "MR" },
-  { id: "jordan", pseudonym: "Jordan K.", initials: "JK" },
-  { id: "sam", pseudonym: "Sam T.", initials: "ST" }
+  { id: "maya", pseudonym: "Maya R.", initials: "MR", story: "Finding steadiness through small creative rituals." },
+  { id: "jordan", pseudonym: "Jordan K.", initials: "JK", story: "Making room to breathe during a busy work season." },
+  { id: "sam", pseudonym: "Sam T.", initials: "ST", story: "Noticing how connection changes the shape of a day." },
+  { id: "shashank", pseudonym: "Shashank M.", initials: "SM", story: "Learning to create a little more space in a very full schedule." }
 ];
 
 const checkIns = [
-  { id: randomUUID(), userId: "maya", moodScore: 3, note: "A little tired, but I took a walk.", tags: ["movement"], date: "2026-09-16" },
+  { id: randomUUID(), userId: "maya", moodScore: 3, note: "A little tired, but I took a walk.", tags: ["movement", "rest"], date: "2026-09-16" },
   { id: randomUUID(), userId: "maya", moodScore: 4, note: "Work felt manageable today.", tags: ["work"], date: "2026-09-15" },
   { id: randomUUID(), userId: "maya", moodScore: 2, note: "A difficult day. Reached out to a friend.", tags: ["connection"], date: "2026-09-14" },
   { id: randomUUID(), userId: "maya", moodScore: 3, note: "Quiet evening and an early night.", tags: ["rest"], date: "2026-09-13" },
   { id: randomUUID(), userId: "maya", moodScore: 4, note: "Made time for something creative.", tags: ["creativity"], date: "2026-09-12" },
   { id: randomUUID(), userId: "jordan", moodScore: 2, note: "Lots on my mind, taking it one task at a time.", tags: ["stress"], date: "2026-09-16" },
   { id: randomUUID(), userId: "jordan", moodScore: 3, note: "A steady day with a good lunch break.", tags: ["rest"], date: "2026-09-15" },
-  { id: randomUUID(), userId: "sam", moodScore: 5, note: "Feeling connected and grateful.", tags: ["connection"], date: "2026-09-16" }
+  { id: randomUUID(), userId: "sam", moodScore: 5, note: "Feeling connected and grateful.", tags: ["connection", "creativity"], date: "2026-09-16" },
+  { id: randomUUID(), userId: "sam", moodScore: 4, note: "A slow morning helped me feel present.", tags: ["rest"], date: "2026-09-15" },
+  { id: randomUUID(), userId: "sam", moodScore: 4, note: "Called my sister on the way home.", tags: ["connection"], date: "2026-09-14" },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Back-to-back meetings and too many open tabs.", tags: ["work", "stress"], date: "2026-09-16" },
+  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "Managed a proper lunch away from my desk.", tags: ["rest", "work"], date: "2026-09-15" },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Finished late again. I want a better off-switch.", tags: ["work", "sleep"], date: "2026-09-14" },
+  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "A short walk between calls helped.", tags: ["movement", "rest"], date: "2026-09-13" },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Said yes to too many things today.", tags: ["stress", "work"], date: "2026-09-12" }
 ];
 
-const resources = [
+const allResources = [
   { title: "A two-minute reset", description: "Put both feet on the floor, relax your shoulders, and take five slow breaths." },
   { title: "Name what you need", description: "Try completing: “Right now, I need a little more ___.” Small needs count." },
-  { title: "Reach out", description: "Send a simple message to someone you trust: “I could use a little company today.”" }
+  { title: "Reach out", description: "Send a simple message to someone you trust: “I could use a little company today.”" },
+  { title: "What helped?", description: "Notice one thing that made today 1% easier. You can return to it later." },
+  { title: "Make it smaller", description: "Choose the next kind, doable step—not the whole staircase." },
+  { title: "The three-minute landing", description: "Before switching tasks, close one tab, take three slow breaths, and name what comes next." },
+  { title: "Create an off-switch", description: "Pick a repeatable end-of-day cue: write tomorrow's first task, then step away for ten minutes." },
+  { title: "A kind no", description: "Try: “I can't take that on this week, but I can revisit it on Monday.” Protecting space is useful work." }
 ];
+
+const userResources = {
+  shashank: [
+    allResources[5],
+    allResources[6],
+    allResources[7]
+  ]
+};
+
+function getInsights(entries) {
+  const average = entries.length ? entries.reduce((sum, item) => sum + item.moodScore, 0) / entries.length : 0;
+  const tagCounts = entries.flatMap((item) => item.tags || []).reduce((counts, tag) => {
+    counts[tag] = (counts[tag] || 0) + 1;
+    return counts;
+  }, {});
+  const topTag = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])[0];
+  const reflection = entries.length >= 4
+    ? `You checked in ${entries.length} times recently${topTag ? `, and ${topTag[0]} appeared most often` : ""}. Notice what you want to carry into next week.`
+    : "A few check-ins can help a pattern emerge. You can start again whenever it feels useful.";
+  return {
+    average: Number(average.toFixed(1)),
+    checkInCount: entries.length,
+    topTag: topTag ? { name: topTag[0], count: topTag[1] } : null,
+    reflection,
+    tagCounts
+  };
+}
 
 function sendJson(response, status, body) {
   response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
@@ -63,7 +103,9 @@ function apiResponse(request, response, url) {
     const entries = checkIns
       .filter((checkIn) => checkIn.userId === userId)
       .sort((a, b) => b.date.localeCompare(a.date));
-    sendJson(response, 200, { user, checkIns: entries, resources });
+    const latestMood = entries[0]?.moodScore || 3;
+    const resources = userResources[userId] || (latestMood <= 2 ? allResources.slice(0, 3) : latestMood >= 4 ? [allResources[3], allResources[1], allResources[4]] : [allResources[0], allResources[2], allResources[4]]);
+    sendJson(response, 200, { user, checkIns: entries, resources, insights: getInsights(entries) });
     return true;
   }
   if (request.method === "POST" && url.pathname === "/api/check-ins") {
@@ -81,7 +123,7 @@ function apiResponse(request, response, url) {
           userId,
           moodScore: score,
           note: String(note || "").trim().slice(0, 500),
-          tags: Array.isArray(tags) ? tags.slice(0, 3).map(String) : [],
+          tags: Array.isArray(tags) ? tags.slice(0, 3).map(String).filter(Boolean) : [],
           date: today
         };
         checkIns.unshift(entry);
