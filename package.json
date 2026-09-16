@@ -1,0 +1,12 @@
+{
+  "name": "mental-health-check-in-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Demo-only mental health check-in MVP with seeded data",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

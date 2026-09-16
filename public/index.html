@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kindred | Daily check-in</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">kindred<span>•</span></a>
+    <div class="demo-badge">Demo mode · no authentication</div>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">A moment for yourself</p>
+      <h1>How are you feeling today?</h1>
+      <p class="intro">A private, low-pressure place to notice patterns and find a little support.</p>
+      <label class="user-picker">Viewing demo profile
+        <select id="user-select" aria-label="Choose demo profile"></select>
+      </label>
+    </section>
+
+    <section class="grid">
+      <div>
+        <article class="card checkin-card">
+          <div class="card-heading"><div><p class="eyebrow">Daily check-in</p><h2>Check in with yourself</h2></div><span class="date" id="today"></span></div>
+          <p class="question">What best describes your mood?</p>
+          <div class="moods" id="moods" role="radiogroup" aria-label="Mood score"></div>
+          <label class="note-label" for="note">Anything you want to remember?</label>
+          <textarea id="note" maxlength="500" placeholder="Optional — this stays private in the demo"></textarea>
+          <button id="submit" class="primary" type="button">Save today's check-in</button>
+          <p id="message" class="message" role="status"></p>
+        </article>
+        <article class="card">
+          <div class="card-heading"><div><p class="eyebrow">Your pattern</p><h2>Recent mood</h2></div><span class="trend-label">Last 7 days</span></div>
+          <div id="chart" class="chart" aria-label="Mood trend chart"></div>
+        </article>
+      </div>
+      <aside>
+        <article class="card support-card">
+          <p class="eyebrow">A little support</p><h2>Try this today</h2>
+          <div id="resources"></div>
+        </article>
+        <article class="card safety-card">
+          <p class="eyebrow">Need more support?</p>
+          <p>If you may hurt yourself or someone else, call your local emergency number now. In the U.S. or Canada, call or text <strong>988</strong>.</p>
+          <p class="small">This demo is not a crisis service or a substitute for professional care.</p>
+        </article>
+      </aside>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
