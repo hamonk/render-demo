@@ -8,7 +8,7 @@ A deliberately demo-only MVP for the mental health check-in concept.
 npm start
 ```
 
-Open `http://localhost:10000`. The app uses a profile switcher instead of authentication and seeds three fictional users with fictional check-ins. The demo includes a guided mood check-in, theme tags, mood-aware support prompts, weekly reflection metrics, an interactive trend chart, and recent check-in details. New check-ins are stored in memory and reset whenever the service restarts or redeploys.
+Open `http://localhost:10000`. The app uses a profile switcher instead of authentication and seeds four fictional users with a rolling demo week of check-ins. The demo includes a guided 3-step mood check-in, theme tags, mood-aware support prompts, weekly reflection metrics, an interactive trend chart, and recent check-in details. New check-ins are stored in memory and reset whenever the service restarts or redeploys.
 
 This is not production-ready: it has no authentication, persistent database, moderation workflow, or crisis-response capability. Do not enter real personal or health information.
 
