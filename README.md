@@ -15,3 +15,8 @@ This is not production-ready: it has no authentication, persistent database, mod
 ## Deploy to Render
 
 Create a new Blueprint from this repository. `render.yaml` provisions one Node web service. Render supplies the `PORT` environment variable automatically.
+
+## Docs
+
+- [High-level design](documentations/mental-health-app-hld.md)
+- [Google login plan](documentations/google-login-plan.md) — proposal for recognizing a real user via Google (or Clerk/Auth0). Not implemented yet.
