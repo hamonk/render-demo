@@ -6,6 +6,16 @@ const { randomUUID } = require("node:crypto");
 const port = Number(process.env.PORT || 10000);
 const publicDir = path.join(__dirname, "public");
 
+function isoDateDaysAgo(days) {
+  const d = new Date();
+  d.setHours(12, 0, 0, 0);
+  d.setDate(d.getDate() - days);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 const users = [
   { id: "maya", pseudonym: "Maya R.", initials: "MR", story: "Finding steadiness through small creative rituals." },
   { id: "jordan", pseudonym: "Jordan K.", initials: "JK", story: "Making room to breathe during a busy work season." },
@@ -14,21 +24,21 @@ const users = [
 ];
 
 const checkIns = [
-  { id: randomUUID(), userId: "maya", moodScore: 3, note: "A little tired, but I took a walk.", tags: ["movement", "rest"], date: "2026-09-16" },
-  { id: randomUUID(), userId: "maya", moodScore: 4, note: "Work felt manageable today.", tags: ["work"], date: "2026-09-15" },
-  { id: randomUUID(), userId: "maya", moodScore: 2, note: "A difficult day. Reached out to a friend.", tags: ["connection"], date: "2026-09-14" },
-  { id: randomUUID(), userId: "maya", moodScore: 3, note: "Quiet evening and an early night.", tags: ["rest"], date: "2026-09-13" },
-  { id: randomUUID(), userId: "maya", moodScore: 4, note: "Made time for something creative.", tags: ["creativity"], date: "2026-09-12" },
-  { id: randomUUID(), userId: "jordan", moodScore: 2, note: "Lots on my mind, taking it one task at a time.", tags: ["stress"], date: "2026-09-16" },
-  { id: randomUUID(), userId: "jordan", moodScore: 3, note: "A steady day with a good lunch break.", tags: ["rest"], date: "2026-09-15" },
-  { id: randomUUID(), userId: "sam", moodScore: 5, note: "Feeling connected and grateful.", tags: ["connection", "creativity"], date: "2026-09-16" },
-  { id: randomUUID(), userId: "sam", moodScore: 4, note: "A slow morning helped me feel present.", tags: ["rest"], date: "2026-09-15" },
-  { id: randomUUID(), userId: "sam", moodScore: 4, note: "Called my sister on the way home.", tags: ["connection"], date: "2026-09-14" },
-  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Back-to-back meetings and too many open tabs.", tags: ["work", "stress"], date: "2026-09-16" },
-  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "Managed a proper lunch away from my desk.", tags: ["rest", "work"], date: "2026-09-15" },
-  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Finished late again. I want a better off-switch.", tags: ["work", "sleep"], date: "2026-09-14" },
-  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "A short walk between calls helped.", tags: ["movement", "rest"], date: "2026-09-13" },
-  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Said yes to too many things today.", tags: ["stress", "work"], date: "2026-09-12" }
+  { id: randomUUID(), userId: "maya", moodScore: 3, note: "A little tired, but I took a walk.", tags: ["movement", "rest"], date: isoDateDaysAgo(1) },
+  { id: randomUUID(), userId: "maya", moodScore: 4, note: "Work felt manageable today.", tags: ["work"], date: isoDateDaysAgo(2) },
+  { id: randomUUID(), userId: "maya", moodScore: 2, note: "A difficult day. Reached out to a friend.", tags: ["connection"], date: isoDateDaysAgo(3) },
+  { id: randomUUID(), userId: "maya", moodScore: 3, note: "Quiet evening and an early night.", tags: ["rest"], date: isoDateDaysAgo(4) },
+  { id: randomUUID(), userId: "maya", moodScore: 4, note: "Made time for something creative.", tags: ["creativity"], date: isoDateDaysAgo(5) },
+  { id: randomUUID(), userId: "jordan", moodScore: 2, note: "Lots on my mind, taking it one task at a time.", tags: ["stress"], date: isoDateDaysAgo(1) },
+  { id: randomUUID(), userId: "jordan", moodScore: 3, note: "A steady day with a good lunch break.", tags: ["rest"], date: isoDateDaysAgo(2) },
+  { id: randomUUID(), userId: "sam", moodScore: 5, note: "Feeling connected and grateful.", tags: ["connection", "creativity"], date: isoDateDaysAgo(1) },
+  { id: randomUUID(), userId: "sam", moodScore: 4, note: "A slow morning helped me feel present.", tags: ["rest"], date: isoDateDaysAgo(2) },
+  { id: randomUUID(), userId: "sam", moodScore: 4, note: "Called my sister on the way home.", tags: ["connection"], date: isoDateDaysAgo(3) },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Back-to-back meetings and too many open tabs.", tags: ["work", "stress"], date: isoDateDaysAgo(1) },
+  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "Managed a proper lunch away from my desk.", tags: ["rest", "work"], date: isoDateDaysAgo(2) },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Finished late again. I want a better off-switch.", tags: ["work", "sleep"], date: isoDateDaysAgo(3) },
+  { id: randomUUID(), userId: "shashank", moodScore: 3, note: "A short walk between calls helped.", tags: ["movement", "rest"], date: isoDateDaysAgo(4) },
+  { id: randomUUID(), userId: "shashank", moodScore: 2, note: "Said yes to too many things today.", tags: ["stress", "work"], date: isoDateDaysAgo(5) }
 ];
 
 const allResources = [
@@ -117,7 +127,7 @@ function apiResponse(request, response, url) {
           sendJson(response, 400, { error: "Choose a demo user and a mood from 1 to 5." });
           return;
         }
-        const today = new Date().toISOString().slice(0, 10);
+        const today = isoDateDaysAgo(0);
         const entry = {
           id: randomUUID(),
           userId,
@@ -157,4 +167,4 @@ const server = http.createServer((request, response) => {
   });
 });
 
-server.listen(port, () => console.log(`Demo listening on port ${port}`));
+server.listen(port, "0.0.0.0", () => console.log(`Demo listening on port ${port}`));

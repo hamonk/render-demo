@@ -4,54 +4,127 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kindred | Daily check-in</title>
+  <meta name="description" content="A private, low-pressure daily check-in to notice mood patterns and find a little support.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/">kindred<span>•</span></a>
-    <div class="demo-badge">Demo mode · no authentication</div>
+    <a class="brand" href="/">
+      <svg class="brand-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 22c-4-3.2-7-7-7-11a7 7 0 0 1 14 0c0 4-3 7.8-7 11Z" stroke="currentColor" stroke-width="1.8"/>
+        <path d="M12 13V8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M12 10c-2 .2-3.6-1.3-3.8-3.1C10 6.7 11.5 8 12 10Z" fill="currentColor"/>
+        <path d="M12 9c1.9-.3 3.6-2 3.4-3.8-1.9.3-3.2 1.9-3.4 3.8Z" fill="currentColor"/>
+      </svg>
+      kindred<span>.</span>
+    </a>
+    <div class="demo-badge">Demo · no sign-in</div>
   </header>
+
   <main>
     <section class="hero">
       <p class="eyebrow">A moment for yourself</p>
       <h1>How are you feeling today?</h1>
       <p class="intro">A private, low-pressure place to notice patterns and find a little support.</p>
-      <label class="user-picker">Viewing demo profile
-        <select id="user-select" aria-label="Choose demo profile"></select>
-      </label>
+      <p class="picker-label">Viewing demo profile</p>
+      <div id="profile-chips" class="profile-chips" role="list"></div>
+      <p id="profile-story" class="profile-story"></p>
       <button id="try-week" class="text-button" type="button">Try a demo week →</button>
     </section>
 
     <section class="grid">
-      <div>
+      <div class="column">
         <article class="card checkin-card">
-          <div class="card-heading"><div><p class="eyebrow">Daily check-in · <span id="step-label">1 of 3</span></p><h2 id="step-title">How are you feeling?</h2></div><span class="date" id="today"></span></div>
-          <div class="step" id="step-mood"><p class="question">Choose the word that feels closest right now.</p><div class="moods" id="moods" role="radiogroup" aria-label="Mood score"></div><button id="to-tags" class="primary" type="button">Continue</button></div>
-          <div class="step hidden" id="step-tags"><p class="question">What might be shaping your mood?</p><div class="tags" id="tags"></div><button id="to-note" class="primary" type="button">Continue</button><button id="back-mood" class="back-button" type="button">Back</button></div>
-          <div class="step hidden" id="step-note"><p class="question">Anything you want to remember?</p><label class="note-label" for="note">Optional reflection</label><textarea id="note" maxlength="500" placeholder="What would be kind to remember about today?"></textarea><button id="submit" class="primary" type="button">Save today's check-in</button><button id="back-tags" class="back-button" type="button">Back</button></div>
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Daily check-in · <span id="step-label">1 of 3</span></p>
+              <h2 id="step-title">How are you feeling?</h2>
+            </div>
+            <span class="date" id="today"></span>
+          </div>
+          <div class="progress" aria-hidden="true">
+            <span id="progress-1" class="progress-bar is-on"></span>
+            <span id="progress-2" class="progress-bar"></span>
+            <span id="progress-3" class="progress-bar"></span>
+          </div>
+          <div class="step" id="step-mood">
+            <p class="question">Choose the word that feels closest right now.</p>
+            <div class="moods" id="moods" role="radiogroup" aria-label="Mood score"></div>
+            <button id="to-tags" class="primary" type="button">Continue</button>
+          </div>
+          <div class="step hidden" id="step-tags">
+            <p class="question">What might be shaping your mood?</p>
+            <p class="hint">Up to three themes.</p>
+            <div class="tags" id="tags"></div>
+            <button id="to-note" class="primary" type="button">Continue</button>
+            <button id="back-mood" class="back-button" type="button">Back</button>
+          </div>
+          <div class="step hidden" id="step-note">
+            <p class="question">Anything you want to remember?</p>
+            <label class="note-label" for="note">Optional reflection</label>
+            <textarea id="note" maxlength="500" placeholder="What would be kind to remember about today?"></textarea>
+            <p id="note-count" class="note-count">0/500</p>
+            <button id="submit" class="primary" type="button">Save today's check-in</button>
+            <button id="back-tags" class="back-button" type="button">Back</button>
+          </div>
           <p id="message" class="message" role="status"></p>
         </article>
+
         <article class="card">
-          <div class="card-heading"><div><p class="eyebrow">Your pattern</p><h2>Recent mood</h2></div><span class="trend-label">Last 7 days</span></div>
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Your pattern</p>
+              <h2>Recent mood</h2>
+            </div>
+            <span class="trend-label">Last 7 days</span>
+          </div>
           <div id="chart" class="chart" aria-label="Mood trend chart"></div>
           <div id="selected-entry" class="selected-entry hidden"></div>
         </article>
-        <article class="card history-card"><div class="card-heading"><div><p class="eyebrow">Your reflections</p><h2>Recent check-ins</h2></div></div><div id="history"></div></article>
+
+        <article class="card history-card">
+          <div class="card-heading">
+            <div>
+              <p class="eyebrow">Your reflections</p>
+              <h2>Recent check-ins</h2>
+            </div>
+          </div>
+          <div id="history"></div>
+        </article>
       </div>
-      <aside>
-        <article class="card insight-card"><p class="eyebrow">A gentle reflection</p><h2 id="reflection">Your week, in a glance</h2><div class="insight-stats"><div><strong id="average">—</strong><span>average mood</span></div><div><strong id="count">—</strong><span>check-ins</span></div><div><strong id="top-tag">—</strong><span>common theme</span></div></div></article>
+
+      <aside class="column">
+        <article class="card insight-card">
+          <p class="eyebrow">A gentle reflection</p>
+          <h2 id="reflection">Your week, in a glance</h2>
+          <div class="insight-stats">
+            <div><strong id="average">—</strong><span>average mood</span></div>
+            <div><strong id="count">—</strong><span>check-ins</span></div>
+            <div><strong id="top-tag">—</strong><span>common theme</span></div>
+          </div>
+        </article>
         <article class="card support-card">
-          <p class="eyebrow">A little support</p><h2>Try this today</h2>
+          <p class="eyebrow">A little support</p>
+          <h2>Try this today</h2>
           <div id="resources"></div>
         </article>
         <article class="card safety-card">
           <p class="eyebrow">Need more support?</p>
-          <p>If you may hurt yourself or someone else, call your local emergency number now. In the U.S. or Canada, call or text <strong>988</strong>.</p>
+          <p>If you may hurt yourself or someone else, call your local emergency number now. In the U.S. or Canada, call or text <a class="crisis-link" href="tel:988">988</a>.</p>
           <p class="small">This demo is not a crisis service or a substitute for professional care.</p>
         </article>
-        <article class="card about-card"><p class="eyebrow">The Kindred loop</p><h2>Notice. Reflect. Try again.</h2><p>One small check-in can turn a busy day into something you can understand—and respond to with care.</p></article>
+        <article class="card about-card">
+          <p class="eyebrow">The Kindred loop</p>
+          <h2>Notice. Reflect. Try again.</h2>
+          <p>One small check-in can turn a busy day into something you can understand—and respond to with care.</p>
+        </article>
       </aside>
     </section>
+
+    <p class="footer-note">Demo only, with fictional profiles. Check-ins you add stay until the service restarts. Do not enter real personal or health information.</p>
   </main>
   <script src="/app.js"></script>
 </body>
